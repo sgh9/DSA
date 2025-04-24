@@ -120,6 +120,19 @@ class Array {
     return acc;
   }
 
+  find(callBack) {
+    for (let i = 0; i < this.length; i++) {
+      if (callBack(this.data[i], i, this.data)) return this.data[i];
+    }
+    return;
+  }
+  findIndex(callBack) {
+    for (let i = 0; i < this.length; i++) {
+      if (callBack(this.data[i], i, this.data)) return i;
+    }
+    return -1;
+  }
+
   shiftLeft() {
     for (let i = 0; i < this.length - 1; i++) {
       this.data[i] = this.data[i + 1];
