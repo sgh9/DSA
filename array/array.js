@@ -1,164 +1,146 @@
+class Array {
+  constructor() {
+    this.data = {};
+    this.length = 0;
+  }
 
+  push(item) {
+    this.data[this.length] = item;
+    this.length++;
+    return this.length + 1;
+  }
+  pop() {
+    const item = this.data[this.length - 1];
+    delete this.data[this.length - 1];
+    this.length--;
+    return item;
+  }
 
-/*
-    1) Largest Number in Array
- */
+  shift() {
+    const item = this.data[0];
+    //1, 2, 3, 4, 5 - > 2, 3, 4, 5
+    this.shiftLeft();
+    delete this.data[this.length - 1];
+    this.length--;
+    return item;
+  }
 
-const getLargestNumber  = (array)=> {
-    let max = array[0];
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        if(element > max) {
-            max = element;
-        }
-        
+  unShift(item) {
+    this.length++;
+    this.shiftRight();
+    this.data[0] = item;
+    return item;
+  }
+
+  slice(start, end) {
+    const sliceData = new Array();
+    end = end < 0 ? 0 : end || this.length;
+    start = start < 0 ? this.length + start : start;
+    for (let i = start; i < end; i++) {
+      sliceData.data[i] = this.data[i];
+      sliceData.length++;
     }
 
-    return max;
-}
+    return sliceData;
+  }
 
-const max = getLargestNumber([3, 5, 1, 2, 8, 11, 7, 0, 15]);
-log({max});
+  splice(start, deleteCount = 0, ...items) {
+    //capture delete items
+    //insert move existing to the right or left
+    //delete items extra items.
+    //insert new items from start index
 
+    //[1, 2, 5, 6, 7] - 1, 1, [11, 12]---> [1, 11, 12, 5, 6, 7];
 
-/*
-2) Second Largest Number in Array
-*/
+    start =
+      start < 0
+        ? Math.max(this.length + start, 0)
+        : Math.min(start, this.length);
 
-const getSecondLargestNumber  = (array)=> {
-    let firstMax = array[0];
-    let secondMax = array[1];
+    deleteCount = Math.min(Math.max(deleteCount, 0), this.length - start);
 
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-
-        if(element > secondMax) {
-            secondMax = element;
-        }
-
-        if(secondMax > firstMax) {
-            let temp = firstMax;
-            firstMax = secondMax;
-            secondMax = temp;
-        }
-        
+    const itemsDeleted = new Array();
+    for (let i = 0; i < deleteCount; i++) {
+      itemsDeleted.data[i] = this.data[start + i];
+      itemsDeleted.length++;
     }
 
-    return secondMax;
-}
+    const shiftIndex = items.length - deleteCount;
 
-const getSecondLargestNumber2  = (array)=> {
-    let firstMax = getLargestNumber(array);
-    let secondMax = array[1];
+    if (shiftIndex > 0) {
+      for (let i = this.length - 1; i >= start + deleteCount; i--) {
+        this.data[i + shiftIndex] = this.data[i];
+      }
+    } else if (shiftIndex < 0) {
+      for (let i = start + deleteCount; i < this.length; i++) {
+        this.data[i + shiftIndex] = this.data[i];
+      }
 
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-
-        if(element > secondMax && firstMax !== element) {
-            secondMax = element;
-        }
-        
+      for (let i = this.length + shiftIndex; i < this.length; i++) {
+        delete this.data[i];
+      }
     }
 
-    return secondMax;
-}
-
-const secondLargest = getSecondLargestNumber([3, 5, 1, 2, 8, 11, 17, 0, 15]);
-const secondLargest2 = getSecondLargestNumber([3, 5, 1, 2, 8, 11, 17, 0, 150]);
-log({secondLargest})
-log({secondLargest2})
-
-
-/*
-3) second smallest
-*/
-
-const getSecondSmallestNumber2  = (array)=> {
-    let firstSmall = array[0];
-    let secondSmall = Number.MAX_VALUE;
-
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-
-        if(element < secondSmall) {
-            secondSmall = element;
-        }
-
-        if(secondSmall < firstSmall) {
-            let temp = firstSmall;
-            firstSmall = secondSmall;
-            secondSmall = temp;
-        }
-        
+    for (let i = 0; i < items.length; i++) {
+      this.data[start + i] = items[i];
     }
+    this.length += shiftIndex;
+    return itemsDeleted;
+  }
 
-    return secondSmall;
-}
-
-const secondSmallest = getSecondSmallestNumber2([3, 5, 1, 2, 8, 11, 17, 1.5, 15]);
-
-log({secondSmallest})
-
-/**
- * 4) check sorted array
- */
-
-const isSorted = (array)=> {
-    for (let index = 0; index < array.length - 1; index++) {
-        const a1 = array[index];
-        const a2 = array[index+1];
-        if(a2 < a1) {
-            return false;
-        }
-        
+  map(callBack) {
+    const newData = new Array();
+    for (let i = 0; i < this.length; i++) {
+      newData.data[i] = callBack(this.data[i], i, this.data);
+      newData.length++;
     }
-    return true;
-}
-log(isSorted([1,4, 4, 5, 7, 7.5, 8]));
+    return newData;
+  }
 
-/*
-
-5) remove duplicate in a sorted array
- */
-
-const removeDuplicate = (array)=> {
-    let newArr = [];
-    let map = {};
-    let j = 0;
-    for (let i = 0; i < array.length; i++) {
-        const e = array[i];
-        if(map[e]) continue;
-
-        map[e] = e;
-        newArr[j]= e;
-        j++;
+  filter(callBack) {
+    const newData = new Array();
+    for (let i = 0; i < this.length; i++) {
+      if (callBack(this.data[i], i, this.data)) {
+        newData.data[i] = this.data[i];
+        newData.length++;
+      }
     }
+    return newData;
+  }
 
-    return newArr;
-}
-const removeDuplicate2 = (arr)=> [...new Set(arr)];
-
-log(removeDuplicate([1,4, 1, 1, 1,14, 5, 7, 7, 8, 8, 9]));
-log(removeDuplicate2([1,4, 1, 1, 1,14, 5, 7, 7, 8, 8, 9]));
-
-/*
-6) remove duplicate from sorted array
-*/
-
-const removeDuplicateFromSortedArr = (array)=> {
-    let j = 0;
-    let newArr = [array[j]];
-
-    for (let i = 1; i < array.length; i++) {
-        const e = array[i];
-        if(e !== newArr[j]) {
-            j++;
-            newArr[j] = e;
-        }
+  reduce(callBack, acc) {
+    let startIndex = 0;
+    if (!acc) {
+      acc = this.data[0];
+      startIndex = 1;
     }
+    for (let i = startIndex; i < this.length; i++) {
+      acc = callBack(acc, this.data[i], i, this.data);
+    }
+    return acc;
+  }
 
-    return newArr;
+  shiftLeft() {
+    for (let i = 0; i < this.length - 1; i++) {
+      this.data[i] = this.data[i + 1];
+    }
+  }
+
+  shiftRight() {
+    for (let i = this.length - 1; i > 0; i--) {
+      this.data[i] = this.data[i - 1];
+    }
+  }
 }
 
-log(removeDuplicateFromSortedArr([2, 2, 3, 4, 4, 5, 5, 5 , 5, 6 , 7 , 8, 9, 9]))
+const arr = new Array();
+arr.push(7);
+arr.push(5);
+arr.push(3);
+arr.push(4);
 
+console.log(Object.values(arr.data));
+
+// const sliceArr = arr.reduce((acc, item) => ({ ...acc, [item]: item }), {});
+const sliceArr = arr.reduce((acc, item) => acc + item);
+console.log(Object.values(arr.data), sliceArr);
