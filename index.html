@@ -3,10 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Array</title>
+    <title>DSA</title>
+    
 </head>
 <body>
-    DSA
+    <script src="./utils//index.js"></script>
+    <script>
+        window.log = (d, isJson = 1) =>{ 
+            if(isJson) {
+                console.log(JSON.stringify({ result: d}))
+            }
+
+            else console.log({result: d})
+        }
+    </script>
     <style>
 
         span {
@@ -17,21 +27,17 @@
             font-size: 2rem;
         }
     </style>
-    
+    <div class="DSA">
+        DSA
+    </div>
+
     <!-- <script src="./patterns/pattern.js"></script> -->
-    <script>
-        window.log = (d, isJson = 1) =>{ 
-            if(isJson) {
-                console.log(JSON.stringify({ result: d}))
-            }
-
-            else console.log({result: d})
-        }
-    </script>
-
     <!-- <script src="./array/ArrayProblems.js"> </script>
     <script src="./array/Array.js"> </script>
     <script src="./HashMap/HashMap.js"></script> -->
-    <script src="./LinkedList/LinkedList.js"></script>
+    <!-- <script src="./LinkedList/LinkedList.js"></script> -->
+    <!-- <script src="./Stack/index.js"></script> -->
+    <script src="./Queue/index.js"></script>
+   
 </body> 
 </html>

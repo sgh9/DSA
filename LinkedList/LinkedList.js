@@ -1,10 +1,3 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
 class LinkedList {
   constructor(value) {
     this.head = new Node(value);
@@ -91,7 +84,8 @@ class LinkedList {
     }
     return values;
   }
-  //1->2->3->4 === null <-1<-2 <-3<-4
+  // 1->2->3->4
+  // null <-1<-2 <-3<-4
 
   reverse() {
     let prev = null;
